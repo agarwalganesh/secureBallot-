@@ -15,6 +15,8 @@ function navigateTo(pageId) {
         displayCandidates();
     } else if (pageId === 'voterReg') {
         // keep voter registration page focused on the form only
+        // Also refresh the registered voters preview so admins/users can see current list
+        displayVoters && displayVoters();
     } else if (pageId === 'manageUsers') {
         displayVoters();
     } else if (pageId === 'voting') {

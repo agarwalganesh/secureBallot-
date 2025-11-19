@@ -35,60 +35,52 @@ function validateAndContinueVoting() {
     }, 2000);
 }
 
-// Enhanced castVote with 2FA check
-const originalCastVote = window.castVote;
-
-window.castVote = function(event) {
-    event.preventDefault();
-
-    const voterId = document.getElementById('votingVoterId').value;
-    const voter = voters.find(v => v.voterId === voterId);
-
-    if (!voter) {
-        showAlert && showAlert('❌ Invalid Voter ID! Please register first.', 'error');
+// Attach enhanced voting behavior (wrap original castVote to enforce 2FA)
+function attachEnhancedCastVote() {
+    if (typeof window.castVote !== 'function') {
+        // If original castVote not yet defined, try again shortly
+        setTimeout(attachEnhancedCastVote, 150);
         return;
     }
 
-    // Check if 2FA was passed for this voter's email
-    const validation = voterOTPValidation[voter.email];
-    if (!validation || !validation.validated || Date.now() > validation.expiresAt) {
-        showAlert && showAlert('❌ Please complete 2FA verification first. Go to "Secure Voting (2FA)" page.', 'error');
-        navigateTo('votingSecure');
-        return;
-    }
+    const original = window.castVote;
 
-    // Call original castVote logic
-    const selectedCandidateId = parseInt(document.querySelector('input[name="selectedCandidate"]:checked').value);
-    const candidate = candidates.find(c => c.id === selectedCandidateId);
+    window.castVote = function(event) {
+        try {
+            event.preventDefault();
+        } catch (e) {
+            // If event is not provided, continue
+        }
 
-    if (!candidate) {
-        showAlert && showAlert('❌ Please select a candidate.', 'error');
-        return;
-    }
+        const voterIdEl = document.getElementById('votingVoterId');
+        const voterId = voterIdEl ? voterIdEl.value : null;
+        const voter = (window.voters || []).find(v => v.voterId === voterId);
 
-    if (voter.hasVoted) {
-        showAlert && showAlert('❌ You have already voted!', 'error');
-        return;
-    }
+        if (!voter) {
+            showAlert && showAlert('❌ Invalid Voter ID! Please register first.', 'error');
+            return;
+        }
 
-    // Cast vote
-    candidate.votes++;
-    localStorage.setItem('candidates', JSON.stringify(candidates));
+        // Check if 2FA was passed for this voter's email
+        const validation = voterOTPValidation[voter.email];
+        if (!validation || !validation.validated || Date.now() > validation.expiresAt) {
+            showAlert && showAlert('❌ Please complete 2FA verification first. Go to "Secure Voting (2FA)" page.', 'error');
+            navigateTo('votingSecure');
+            return;
+        }
 
-    voter.hasVoted = true;
-    localStorage.setItem('voters', JSON.stringify(voters));
+        // If 2FA passed, call the original castVote (which handles selection and marking)
+        try {
+            original.call(window, event);
+        } catch (err) {
+            console.error('Error calling original castVote:', err);
+            showAlert && showAlert('❌ An error occurred while casting your vote. See console for details.', 'error');
+        }
 
-    // Generate receipt
-    const receipt = generateVotingReceipt(voter.voterId, candidate.name);
+        // Cleanup validation after successful attempt
+        delete voterOTPValidation[voter.email];
+    };
+}
 
-    // Show receipt to voter
-    displayVotingReceiptToVoter(receipt);
-
-    // Log and cleanup
-    delete voterOTPValidation[voter.email];
-
-    showAlert && showAlert(`✅ Your vote for ${candidate.name} has been recorded successfully!`, 'success');
-    document.getElementById('votingForm').reset();
-    displayCandidatesForVoting();
-    updateHomepageStats && updateHomepageStats();
-};
+// Start the attach process when scripts are ready
+attachEnhancedCastVote();

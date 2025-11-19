@@ -12,6 +12,20 @@ function generateOTP() {
 
 // Send OTP to voter (simulated - in production use email service)
 function sendOTP(voterEmail) {
+    // Basic validation
+    if (!voterEmail || typeof voterEmail !== 'string') {
+        showAlert && showAlert('❌ Please enter a valid email address.', 'error');
+        return null;
+    }
+
+    // Ensure email belongs to a registered voter (demo behavior)
+    const registered = (window.voters || []).some(v => v.email === voterEmail);
+    if (!registered) {
+        showAlert && showAlert('❌ Email not found. Please register as a voter first.', 'error');
+        logTwoFAAttempt(voterEmail, 'OTP_SEND_FAIL', false, 'Email not registered');
+        return null;
+    }
+
     const otp = generateOTP();
     const expiresAt = Date.now() + 5 * 60 * 1000; // 5 minutes
 
