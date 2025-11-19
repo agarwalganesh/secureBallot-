@@ -171,9 +171,11 @@ function startTutorial() {
     let currentStep = 0;
 
     function showStep(stepIndex) {
+        currentStep = stepIndex;
         const step = tutorialSteps[stepIndex];
-        const modal = document.createElement('div');
-        modal.style.cssText = `
+
+        const overlay = document.createElement('div');
+        overlay.style.cssText = `
             position: fixed;
             top: 0;
             left: 0;
@@ -186,70 +188,87 @@ function startTutorial() {
             z-index: 2000;
         `;
 
-        modal.innerHTML = `
-            <div style="
-                background: white;
-                padding: 40px;
-                border-radius: 15px;
-                max-width: 500px;
-                box-shadow: 0 10px 40px rgba(0,0,0,0.3);
-                text-align: center;
-            ">
-                <h2 style="margin-top: 0; color: #1f2937;">${step.title}</h2>
-                <p style="white-space: pre-wrap; line-height: 1.6; color: #4b5563; margin: 20px 0;">${step.message}</p>
-                <div style="display: flex; gap: 10px; justify-content: center; margin-top: 30px;">
-                    ${stepIndex > 0 ? `
-                        <button onclick="this.parentElement.parentElement.parentElement.remove()" style="
-                            background: #e5e7eb;
-                            color: #1f2937;
-                            border: none;
-                            padding: 10px 25px;
-                            border-radius: 6px;
-                            cursor: pointer;
-                            font-weight: bold;
-                        ">← Back</button>
-                    ` : ''}
-                    <button onclick="this.parentElement.parentElement.parentElement.remove()" style="
-                        background: #ef4444;
-                        color: white;
-                        border: none;
-                        padding: 10px 25px;
-                        border-radius: 6px;
-                        cursor: pointer;
-                        font-weight: bold;
-                    ">Skip</button>
-                    <button onclick="
-                        ${step.callback ? step.callback.toString().slice(12, -1) : ''}
-                        this.parentElement.parentElement.parentElement.remove();
-                    " style="
-                        background: #3b82f6;
-                        color: white;
-                        border: none;
-                        padding: 10px 25px;
-                        border-radius: 6px;
-                        cursor: pointer;
-                        font-weight: bold;
-                    ">${step.action}</button>
-                    ${stepIndex < tutorialSteps.length - 1 ? `
-                        <button onclick="
-                            ${stepIndex + 1};
-                            this.parentElement.parentElement.parentElement.remove();
-                        " style="
-                            background: #10b981;
-                            color: white;
-                            border: none;
-                            padding: 10px 25px;
-                            border-radius: 6px;
-                            cursor: pointer;
-                            font-weight: bold;
-                        ">Next →</button>
-                    ` : ''}
-                </div>
-                <p style="font-size: 0.85em; color: #9ca3af; margin-top: 20px; margin-bottom: 0;">Step ${stepIndex + 1} of ${tutorialSteps.length}</p>
-            </div>
+        const dialog = document.createElement('div');
+        dialog.style.cssText = `
+            background: white;
+            padding: 28px 36px;
+            border-radius: 12px;
+            max-width: 540px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            text-align: center;
+            color: #1f2937;
         `;
 
-        document.body.appendChild(modal);
+        const title = document.createElement('h2');
+        title.style.marginTop = '0';
+        title.textContent = step.title;
+
+        const msg = document.createElement('p');
+        msg.style.whiteSpace = 'pre-wrap';
+        msg.style.lineHeight = '1.6';
+        msg.style.color = '#4b5563';
+        msg.style.margin = '18px 0';
+        msg.textContent = step.message;
+
+        const buttons = document.createElement('div');
+        buttons.style.cssText = 'display:flex; gap:10px; justify-content:center; margin-top:18px; flex-wrap:wrap;';
+
+        // Back button
+        if (stepIndex > 0) {
+            const backBtn = document.createElement('button');
+            backBtn.textContent = '← Back';
+            backBtn.style.cssText = 'background:#e5e7eb; color:#1f2937; border:none; padding:10px 18px; border-radius:6px; cursor:pointer; font-weight:bold;';
+            backBtn.addEventListener('click', () => {
+                overlay.remove();
+                showStep(stepIndex - 1);
+            });
+            buttons.appendChild(backBtn);
+        }
+
+        // Skip button
+        const skipBtn = document.createElement('button');
+        skipBtn.textContent = 'Skip';
+        skipBtn.style.cssText = 'background:#ef4444; color:white; border:none; padding:10px 18px; border-radius:6px; cursor:pointer; font-weight:bold;';
+        skipBtn.addEventListener('click', () => overlay.remove());
+        buttons.appendChild(skipBtn);
+
+        // Action button (primary)
+        const actionBtn = document.createElement('button');
+        actionBtn.textContent = step.action || 'Action';
+        actionBtn.style.cssText = 'background:#3b82f6; color:white; border:none; padding:10px 18px; border-radius:6px; cursor:pointer; font-weight:bold;';
+        actionBtn.addEventListener('click', () => {
+            try {
+                if (typeof step.callback === 'function') step.callback();
+            } catch (e) {
+                console.error('Tutorial action callback error:', e);
+            }
+            overlay.remove();
+        });
+        buttons.appendChild(actionBtn);
+
+        // Next button
+        if (stepIndex < tutorialSteps.length - 1) {
+            const nextBtn = document.createElement('button');
+            nextBtn.textContent = 'Next →';
+            nextBtn.style.cssText = 'background:#10b981; color:white; border:none; padding:10px 18px; border-radius:6px; cursor:pointer; font-weight:bold;';
+            nextBtn.addEventListener('click', () => {
+                overlay.remove();
+                showStep(stepIndex + 1);
+            });
+            buttons.appendChild(nextBtn);
+        }
+
+        const footer = document.createElement('p');
+        footer.style.cssText = 'font-size:0.85em; color:#9ca3af; margin-top:16px; margin-bottom:0;';
+        footer.textContent = `Step ${stepIndex + 1} of ${tutorialSteps.length}`;
+
+        dialog.appendChild(title);
+        dialog.appendChild(msg);
+        dialog.appendChild(buttons);
+        dialog.appendChild(footer);
+
+        overlay.appendChild(dialog);
+        document.body.appendChild(overlay);
     }
 
     showStep(currentStep);
