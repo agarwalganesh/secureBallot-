@@ -108,23 +108,47 @@
                     </div>
                     <div class="feature-card">
                         <div class="feature-number">03</div>
-                        <h3>Secure Voting</h3>
-                        <p>One-voter-one-vote system with advanced authentication. Your choice is recorded securely and anonymously.</p>
-                        <button class="btn btn-outline" onclick="navigateTo('voting')">Vote Now</button>
+                        <h3>Secure Voting (2FA)</h3>
+                        <p>Two-factor authentication ensures only authorized voters can cast votes. OTP verification for security.</p>
+                        <button class="btn btn-outline" onclick="navigateTo('votingSecure')">Vote Securely</button>
                     </div>
                     <div class="feature-card">
                         <div class="feature-number">04</div>
+                        <h3>Vote Verification</h3>
+                        <p>Verify your vote receipt to confirm your vote was counted. End-to-end verifiable elections.</p>
+                        <button class="btn btn-outline" onclick="navigateTo('verifyReceipt')">Verify</button>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-number">05</div>
                         <h3>Live Results</h3>
                         <p>Real-time election results with detailed statistics, vote percentages, and voter turnout information.</p>
                         <button class="btn btn-outline" onclick="navigateTo('results')">View Results</button>
                     </div>
                     <div class="feature-card">
-                        <div class="feature-number">05</div>
+                        <div class="feature-number">06</div>
+                        <h3>Admin Panel</h3>
+                        <p>Configure elections, manage bulk voters, view audit logs, and access security dashboards.</p>
+                        <button class="btn btn-outline" onclick="navigateTo('adminSettings')">Admin Tools</button>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-number">07</div>
+                        <h3>Bulk Voter Management</h3>
+                        <p>Import/export voter lists, manage registrations in bulk, and view import history.</p>
+                        <button class="btn btn-outline" onclick="navigateTo('voterBulkManage')">Manage Voters</button>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-number">08</div>
+                        <h3>Audit Dashboard</h3>
+                        <p>View 2FA audit logs, voting receipts ledger, and export data for compliance.</p>
+                        <button class="btn btn-outline" onclick="navigateTo('adminAudit')">View Audit</button>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-number">09</div>
                         <h3>Data Security</h3>
                         <p>Your data is stored locally in your browser. No external servers, complete privacy and control.</p>
                     </div>
                     <div class="feature-card">
-                        <div class="feature-number">06</div>
+                        <div class="feature-number">10</div>
                         <h3>Mobile Friendly</h3>
                         <p>Responsive design that works perfectly on desktop, tablet, and mobile devices. Vote from anywhere.</p>
                     </div>
@@ -177,11 +201,17 @@
                     <button class="btn btn-secondary btn-large" onclick="navigateTo('voterReg')">
                         👥 Register as Voter
                     </button>
-                    <button class="btn btn-info btn-large" onclick="navigateTo('voting')">
-                        🗳️ Cast Your Vote
+                    <button class="btn btn-info btn-large" onclick="navigateTo('votingSecure')">
+                        🔐 Cast Vote (Secure)
                     </button>
                     <button class="btn btn-success btn-large" onclick="navigateTo('results')">
                         📊 View Results
+                    </button>
+                    <button class="btn btn-outline btn-large" onclick="navigateTo('verifyReceipt')">
+                        🎫 Verify Receipt
+                    </button>
+                    <button class="btn btn-primary btn-large" onclick="navigateTo('adminSettings')">
+                        ⚙️ Admin Panel
                     </button>
                 </div>
             </div>
@@ -328,10 +358,213 @@
         </div>
     </div>
 
+    <!-- Election Settings Page -->
+    <div id="adminSettings" class="page">
+        <div class="container">
+            <button class="back-btn" onclick="navigateTo('homepage')">← Back</button>
+            <h1>⚙️ Election Settings</h1>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-bottom: 40px;">
+                <div>
+                    <h2 style="margin-top: 0;">Configure Election</h2>
+                    <form onsubmit="saveElectionSettings(event)">
+                        <div class="form-group">
+                            <label>Election Name:</label>
+                            <input type="text" id="electionName" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Start Time:</label>
+                            <input type="datetime-local" id="electionStartTime">
+                        </div>
+                        <div class="form-group">
+                            <label>End Time:</label>
+                            <input type="datetime-local" id="electionEndTime">
+                        </div>
+                        <div class="form-group">
+                            <label>Ballot Type:</label>
+                            <select id="ballotType">
+                                <option value="single-choice">Single Choice</option>
+                                <option value="multi-choice">Multi-Choice</option>
+                                <option value="ranked-choice">Ranked Choice</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Quorum Percentage (%):</label>
+                            <input type="number" id="quorumPercentage" min="0" max="100" value="0">
+                        </div>
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" id="allowVoterEdit" checked>
+                                Allow Voters to Edit Their Details
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label>Max Candidate Selections:</label>
+                            <input type="number" id="maxCandidateSelections" min="1" value="1">
+                        </div>
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" id="allowAbstain">
+                                Allow Abstain Option
+                            </label>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Save Settings</button>
+                    </form>
+                </div>
+
+                <div>
+                    <div id="electionSettingsDisplay"></div>
+                    <h3 style="margin-top: 30px;">Import/Export</h3>
+                    <p>
+                        <button class="btn btn-secondary" onclick="exportElectionConfig()" style="width:100%; margin-bottom:10px;">
+                            📥 Export Configuration
+                        </button>
+                    </p>
+                    <p>
+                        <label class="btn btn-secondary" for="configImportInput" style="width:100%; cursor:pointer; text-align:center; display:block;">
+                            📤 Import Configuration
+                        </label>
+                        <input type="file" id="configImportInput" accept=".json" style="display:none;" onchange="importElectionConfig(this.files[0])">
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Voter 2FA & Receipt Page -->
+    <div id="votingSecure" class="page">
+        <div class="container">
+            <button class="back-btn" onclick="navigateTo('voting')">← Back</button>
+            <h1>🔐 Secure Voting (2FA)</h1>
+
+            <div style="background: #f0f9ff; border: 2px solid #0284c7; padding: 20px; border-radius: 8px; margin-bottom: 30px;">
+                <h3 style="margin-top: 0;">Step 1: Verify Your Email (2FA)</h3>
+                <div class="form-group">
+                    <label>Your Email:</label>
+                    <input type="email" id="twoFAEmail" placeholder="Enter your registered email" required>
+                </div>
+                <button class="btn btn-primary" onclick="sendOTP(document.getElementById('twoFAEmail').value)">
+                    Send OTP
+                </button>
+            </div>
+
+            <div style="background: #f0f9ff; border: 2px solid #0284c7; padding: 20px; border-radius: 8px;">
+                <h3 style="margin-top: 0;">Step 2: Enter OTP</h3>
+                <div class="form-group">
+                    <label>One-Time Password (OTP):</label>
+                    <input type="text" id="otpInput" placeholder="Enter 6-digit OTP" maxlength="6" required>
+                </div>
+                <button class="btn btn-success" onclick="validateAndContinueVoting()">
+                    Verify & Continue
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Receipt Verification Page -->
+    <div id="verifyReceipt" class="page">
+        <div class="container">
+            <button class="back-btn" onclick="navigateTo('homepage')">← Back</button>
+            <h1>🎫 Verify Your Vote Receipt</h1>
+
+            <div style="max-width: 600px; margin: 0 auto;">
+                <div style="background: #f3f4f6; padding: 20px; border-radius: 8px; margin-bottom: 30px;">
+                    <h3 style="margin-top: 0;">Check Your Vote</h3>
+                    <p>Enter your Receipt ID (provided after voting) to verify your vote is included in the election ledger.</p>
+                    <div class="form-group">
+                        <label>Receipt ID:</label>
+                        <input type="text" id="verifyReceiptId" placeholder="e.g., A3F2B1C9D5E8" style="font-family: monospace;">
+                    </div>
+                    <button class="btn btn-primary" onclick="verifyVotingReceipt()">
+                        Verify Receipt
+                    </button>
+                </div>
+
+                <div id="verifyReceiptResult" style="min-height: 50px;"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bulk Voter Import/Export Page -->
+    <div id="voterBulkManage" class="page">
+        <div class="container">
+            <button class="back-btn" onclick="navigateTo('homepage')">← Back</button>
+            <h1>📥 Bulk Voter Management</h1>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px;">
+                <div>
+                    <h3>Import Voters from CSV</h3>
+                    <p style="font-size: 0.95em; color: #666;">Upload a CSV file with columns: name, email, voterId, age</p>
+                    <label class="btn btn-primary" for="bulkVoterImport" style="cursor: pointer; display: block; text-align: center; margin-bottom: 10px;">
+                        📤 Choose CSV File
+                    </label>
+                    <input type="file" id="bulkVoterImport" accept=".csv" style="display:none;" onchange="validateVoterCSV(this.files[0])">
+
+                    <p>
+                        <button class="btn btn-outline" onclick="downloadSampleVoterCSV()">
+                            📋 Download Sample CSV
+                        </button>
+                    </p>
+
+                    <div id="voterImportLogContainer" style="margin-top: 20px;"></div>
+                </div>
+
+                <div>
+                    <h3>Export Voters</h3>
+                    <p style="font-size: 0.95em; color: #666;">Download all registered voters as a CSV file.</p>
+                    <button class="btn btn-secondary" onclick="exportVotersAsCSV()" style="width: 100%; margin-bottom: 10px;">
+                        📥 Export Voters as CSV
+                    </button>
+
+                    <h3 style="margin-top: 30px;">Quick Actions</h3>
+                    <button class="btn btn-outline" onclick="displayVoterImportLog()" style="width: 100%;">
+                        View Import History
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Audit Dashboard -->
+    <div id="adminAudit" class="page">
+        <div class="container">
+            <button class="back-btn" onclick="navigateTo('homepage')">← Back</button>
+            <h1>📊 Admin Audit Dashboard</h1>
+
+            <div style="margin-bottom: 40px;">
+                <h3>🔐 2FA Audit Log</h3>
+                <button class="btn btn-secondary" onclick="display2FAAuditLog()" style="margin-bottom: 10px;">
+                    Refresh 2FA Log
+                </button>
+                <button class="btn btn-outline" onclick="clear2FAAuditLog()">
+                    Clear Log
+                </button>
+                <div id="twoFAAuditContainer" style="margin-top: 15px;"></div>
+            </div>
+
+            <div style="margin-bottom: 40px;">
+                <h3>🎫 Voting Receipts Ledger</h3>
+                <button class="btn btn-secondary" onclick="displayVotingReceiptsAdmin()" style="margin-bottom: 10px;">
+                    Refresh Receipts
+                </button>
+                <button class="btn btn-primary" onclick="exportVotingReceiptsAudit()">
+                    Export as CSV
+                </button>
+                <div id="votingReceiptsAdminContainer" style="margin-top: 15px;"></div>
+            </div>
+        </div>
+    </div>
+
     <script src="js/voter.js"></script>
     <script src="js/candidate.js"></script>
     <script src="js/voting.js"></script>
     <script src="js/import.js"></script>
+    <script src="js/twofa.js"></script>
+    <script src="js/verifiable.js"></script>
+    <script src="js/settings.js"></script>
+    <script src="js/receipt.js"></script>
+    <script src="js/bulk-voter.js"></script>
+    <script src="js/voting-enhanced.js"></script>
     <script src="js/results.js"></script>
 </body>
 </html>

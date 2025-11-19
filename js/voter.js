@@ -19,6 +19,17 @@ function navigateTo(pageId) {
         displayVoters();
     } else if (pageId === 'voting') {
         displayCandidatesForVoting();
+    } else if (pageId === 'votingSecure') {
+        // 2FA page - load settings if needed
+    } else if (pageId === 'verifyReceipt') {
+        // Receipt verification page
+    } else if (pageId === 'adminSettings') {
+        loadSettingsForm && loadSettingsForm();
+    } else if (pageId === 'voterBulkManage') {
+        displayVoterImportLog && displayVoterImportLog();
+    } else if (pageId === 'adminAudit') {
+        display2FAAuditLog && display2FAAuditLog();
+        displayVotingReceiptsAdmin && displayVotingReceiptsAdmin();
     } else if (pageId === 'results') {
         displayResults();
     } else if (pageId === 'homepage') {
