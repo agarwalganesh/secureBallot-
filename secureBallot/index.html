@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>secureBallot - Voting System</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- Homepage -->
+    <div id="homepage" class="page active">
+        <!-- Navigation Bar -->
+        <nav class="navbar">
+            <div class="nav-container">
+                <div class="logo">🗳️ secureBallot</div>
+                <div class="nav-links">
+                    <a href="#about" onclick="scrollToSection('about')">About</a>
+                    <a href="#features" onclick="scrollToSection('features')">Features</a>
+                    <a href="#how-it-works" onclick="scrollToSection('how-it-works')">How it Works</a>
+                    <a href="#contact" onclick="scrollToSection('contact')">Contact</a>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Hero Section -->
+        <div class="hero-section">
+            <div class="hero-content">
+                <h1 class="hero-title">Your Voice Matters</h1>
+                <p class="hero-subtitle">Cast your vote securely and transparently with secureBallot</p>
+                <p class="hero-description">A modern, blockchain-inspired voting platform designed for fair and transparent elections. Every vote counts, every voice is heard.</p>
+                
+                <div class="hero-buttons">
+                    <button class="btn btn-primary btn-large" onclick="navigateTo('candidateReg')">
+                        🎯 Get Started as Candidate
+                    </button>
+                    <button class="btn btn-secondary btn-large" onclick="navigateTo('voterReg')">
+                        👥 Register as Voter
+                    </button>
+                    <label class="btn btn-outline btn-large" for="importFileInput" style="cursor: pointer; margin-left: 8px;">
+                        📁 Import Data
+                    </label>
+                    <input type="file" id="importFileInput" accept=".json,.csv,.txt" style="display:none" />
+                </div>
+
+                <div class="hero-stats">
+                    <div class="stat-box">
+                        <div class="stat-number" id="stat-candidates">0</div>
+                        <div class="stat-label">Candidates</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-number" id="stat-voters">0</div>
+                        <div class="stat-label">Voters</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-number" id="stat-votes">0</div>
+                        <div class="stat-label">Votes Cast</div>
+                    </div>
+                </div>
+            </div>
+            <div class="hero-image">
+                <div class="voting-box-animation">
+                    <div class="ballot-card">📋</div>
+                    <div class="check-mark">✅</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- About Section -->
+        <div class="section" id="about">
+            <div class="section-container">
+                <h2 class="section-title">About secureBallot</h2>
+                <div class="about-grid">
+                    <div class="about-card">
+                        <div class="card-icon">🔐</div>
+                        <h3>Secure</h3>
+                        <p>Military-grade encryption ensures your vote is private and protected from unauthorized access.</p>
+                    </div>
+                    <div class="about-card">
+                        <div class="card-icon">🔍</div>
+                        <h3>Transparent</h3>
+                        <p>Real-time vote tracking and instant results ensure complete transparency in the voting process.</p>
+                    </div>
+                    <div class="about-card">
+                        <div class="card-icon">⚡</div>
+                        <h3>Lightning Fast</h3>
+                        <p>Instant vote registration and results display. No delays, pure efficiency.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Features Section -->
+        <div class="section section-alt" id="features">
+            <div class="section-container">
+                <h2 class="section-title">Powerful Features</h2>
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="feature-number">01</div>
+                        <h3>Candidate Registration</h3>
+                        <p>Easy candidate registration with party details, symbols, and biography. Build your campaign profile in minutes.</p>
+                        <button class="btn btn-outline" onclick="navigateTo('candidateReg')">Register Now</button>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-number">02</div>
+                        <h3>Voter Verification</h3>
+                        <p>Secure voter registration system with age verification and unique Voter ID. Only eligible voters can participate.</p>
+                        <button class="btn btn-outline" onclick="navigateTo('voterReg')">Join Now</button>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-number">03</div>
+                        <h3>Secure Voting</h3>
+                        <p>One-voter-one-vote system with advanced authentication. Your choice is recorded securely and anonymously.</p>
+                        <button class="btn btn-outline" onclick="navigateTo('voting')">Vote Now</button>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-number">04</div>
+                        <h3>Live Results</h3>
+                        <p>Real-time election results with detailed statistics, vote percentages, and voter turnout information.</p>
+                        <button class="btn btn-outline" onclick="navigateTo('results')">View Results</button>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-number">05</div>
+                        <h3>Data Security</h3>
+                        <p>Your data is stored locally in your browser. No external servers, complete privacy and control.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-number">06</div>
+                        <h3>Mobile Friendly</h3>
+                        <p>Responsive design that works perfectly on desktop, tablet, and mobile devices. Vote from anywhere.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- How It Works Section -->
+        <div class="section" id="how-it-works">
+            <div class="section-container">
+                <h2 class="section-title">How It Works</h2>
+                <div class="steps-container">
+                    <div class="step">
+                        <div class="step-number">1</div>
+                        <h3>Register</h3>
+                        <p>Candidates and voters register their information through simple forms.</p>
+                    </div>
+                    <div class="step-arrow">→</div>
+                    <div class="step">
+                        <div class="step-number">2</div>
+                        <h3>Verify</h3>
+                        <p>System verifies voter eligibility and candidate credentials.</p>
+                    </div>
+                    <div class="step-arrow">→</div>
+                    <div class="step">
+                        <div class="step-number">3</div>
+                        <h3>Vote</h3>
+                        <p>Voters cast their vote securely using Voter ID authentication.</p>
+                    </div>
+                    <div class="step-arrow">→</div>
+                    <div class="step">
+                        <div class="step-number">4</div>
+                        <h3>Results</h3>
+                        <p>Live results are displayed in real-time with detailed analytics.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Call to Action Section -->
+        <div class="section section-alt cta-section" id="contact">
+            <div class="section-container">
+                <h2 class="section-title">Ready to Vote?</h2>
+                <p class="cta-subtitle">Join thousands of voters participating in secure, transparent elections.</p>
+                
+                <div class="cta-buttons">
+                    <button class="btn btn-primary btn-large" onclick="navigateTo('candidateReg')">
+                        🎯 Register as Candidate
+                    </button>
+                    <button class="btn btn-secondary btn-large" onclick="navigateTo('voterReg')">
+                        👥 Register as Voter
+                    </button>
+                    <button class="btn btn-info btn-large" onclick="navigateTo('voting')">
+                        🗳️ Cast Your Vote
+                    </button>
+                    <button class="btn btn-success btn-large" onclick="navigateTo('results')">
+                        📊 View Results
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-container">
+                <div class="footer-content">
+                    <h3>secureBallot</h3>
+                    <p>Secure, transparent, and democratic voting for everyone.</p>
+                </div>
+                <div class="footer-links">
+                    <div class="footer-section">
+                        <h4>Quick Links</h4>
+                        <a href="#" onclick="navigateTo('candidateReg')">Register Candidate</a>
+                        <a href="#" onclick="navigateTo('voterReg')">Register Voter</a>
+                        <a href="#" onclick="navigateTo('voting')">Vote</a>
+                        <a href="#" onclick="navigateTo('results')">Results</a>
+                    </div>
+                    <div class="footer-section">
+                        <h4>Information</h4>
+                        <a href="#about" onclick="scrollToSection('about')">About Us</a>
+                        <a href="#features" onclick="scrollToSection('features')">Features</a>
+                        <a href="#how-it-works" onclick="scrollToSection('how-it-works')">How It Works</a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 secureBallot. All rights reserved. | Built with ❤️ for democracy</p>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Candidate Registration Page -->
+    <div id="candidateReg" class="page">
+        <div class="container">
+            <button class="back-btn" onclick="navigateTo('homepage')">← Back</button>
+            <h1>Candidate Registration</h1>
+            
+            <form id="candidateForm" onsubmit="registerCandidate(event)">
+                <div class="form-group">
+                    <label for="candidateName">Full Name:</label>
+                    <input type="text" id="candidateName" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="candidateParty">Party Name:</label>
+                    <input type="text" id="candidateParty" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="candidateSymbol">Party Symbol:</label>
+                    <input type="text" id="candidateSymbol" placeholder="e.g., Lion, Tiger, etc." required>
+                </div>
+
+                <div class="form-group">
+                    <label for="candidateBio">Biography:</label>
+                    <textarea id="candidateBio" rows="4" required></textarea>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Register Candidate</button>
+            </form>
+
+            <div id="candidateList" class="candidate-list"></div>
+        </div>
+    </div>
+
+    <!-- Voter Registration Page -->
+    <div id="voterReg" class="page">
+        <div class="container">
+            <button class="back-btn" onclick="navigateTo('homepage')">← Back</button>
+            <h1>Voter Registration</h1>
+            
+            <form id="voterForm" onsubmit="registerVoter(event)">
+                <div class="form-group">
+                    <label for="voterName">Full Name:</label>
+                    <input type="text" id="voterName" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="voterEmail">Email:</label>
+                    <input type="email" id="voterEmail" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="voterAge">Age:</label>
+                    <input type="number" id="voterAge" min="18" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="voterId">Voter ID:</label>
+                    <input type="text" id="voterId" placeholder="e.g., VID-12345" required>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Register as Voter</button>
+            </form>
+            <!-- Voter list moved to Manage Users page -->
+        </div>
+    </div>
+
+    <!-- Manage Users Page (Registered Users with timestamps) -->
+    <div id="manageUsers" class="page">
+        <div class="container">
+            <button class="back-btn" onclick="navigateTo('homepage')">← Back</button>
+            <h1>Registered Users</h1>
+
+            <div id="manageVoterList" class="voter-list"></div>
+        </div>
+    </div>
+
+    <!-- Voting Page -->
+    <div id="voting" class="page">
+        <div class="container">
+            <button class="back-btn" onclick="navigateTo('homepage')">← Back</button>
+            <h1>Cast Your Vote</h1>
+            
+            <div class="voting-container">
+                <form id="votingForm" onsubmit="castVote(event)">
+                    <div class="form-group">
+                        <label for="votingVoterId">Your Voter ID:</label>
+                        <input type="text" id="votingVoterId" placeholder="Enter your Voter ID" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Select Your Candidate:</label>
+                        <div id="candidateOptions" class="candidates-grid"></div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Cast Vote</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Result Page -->
+    <div id="results" class="page">
+        <div class="container">
+            <button class="back-btn" onclick="navigateTo('homepage')">← Back</button>
+            <h1>Election Results</h1>
+            
+            <div id="resultsContainer" class="results-container"></div>
+            <div id="totalVotes" class="total-votes"></div>
+        </div>
+    </div>
+
+    <script src="js/voter.js"></script>
+    <script src="js/candidate.js"></script>
+    <script src="js/voting.js"></script>
+    <script src="js/import.js"></script>
+    <script src="js/results.js"></script>
+</body>
+</html>
