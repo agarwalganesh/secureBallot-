@@ -5,8 +5,135 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>secureBallot - Voting System</title>
     <link rel="stylesheet" href="css/style.css">
+    <style>
+        .help-banner {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 20px;
+            text-align: center;
+            font-size: 0.95em;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .help-banner button {
+            background: white;
+            color: #667eea;
+            border: none;
+            padding: 6px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.85em;
+        }
+        .help-banner button:hover {
+            background: #f0f0f0;
+        }
+        .quick-nav {
+            position: fixed;
+            left: 0;
+            top: 120px;
+            background: white;
+            border-right: 2px solid #e5e7eb;
+            width: 200px;
+            height: calc(100vh - 120px);
+            overflow-y: auto;
+            padding: 15px 0;
+            display: none;
+            z-index: 100;
+        }
+        .quick-nav.active {
+            display: block;
+        }
+        .quick-nav a {
+            display: block;
+            padding: 12px 15px;
+            color: #374151;
+            text-decoration: none;
+            border-left: 3px solid transparent;
+            font-size: 0.9em;
+            transition: all 0.2s;
+        }
+        .quick-nav a:hover {
+            background: #f3f4f6;
+            border-left-color: #3b82f6;
+        }
+        .quick-nav-toggle {
+            position: fixed;
+            left: 0;
+            top: 80px;
+            background: #3b82f6;
+            color: white;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 0 5px 5px 0;
+            cursor: pointer;
+            font-size: 1.2em;
+            z-index: 101;
+        }
+        .tooltip {
+            position: relative;
+            display: inline-block;
+            cursor: help;
+            color: #3b82f6;
+            font-weight: bold;
+            margin-left: 5px;
+        }
+        .tooltip:hover::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #1f2937;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            white-space: nowrap;
+            z-index: 1000;
+            font-size: 0.85em;
+            font-weight: normal;
+        }
+    </style>
 </head>
 <body>
+    <!-- Help Banner -->
+    <div class="help-banner">
+        <span>📚 Need Help? Try Tutorial or Load Demo Data to get started!</span>
+        <div>
+            <button onclick="startTutorial()">🎓 Tutorial</button>
+            <button onclick="loadDemoData()">📦 Demo Data</button>
+            <button onclick="showFeatureGuide()">❓ Guide</button>
+        </div>
+    </div>
+
+    <!-- Quick Navigation Toggle -->
+    <button class="quick-nav-toggle" onclick="document.querySelector('.quick-nav').classList.toggle('active'); this.textContent = this.textContent === '☰' ? '✕' : '☰'">☰</button>
+
+    <!-- Quick Navigation Sidebar -->
+    <div class="quick-nav">
+        <h4 style="padding: 0 15px; margin: 10px 0; color: #667eea;">🎯 Voter Features</h4>
+        <a onclick="navigateTo('voterReg')">👥 Register as Voter</a>
+        <a onclick="navigateTo('votingSecure')">🔐 Vote (with 2FA)</a>
+        <a onclick="navigateTo('verifyReceipt')">🎫 Verify Receipt</a>
+        <a onclick="navigateTo('results')">📊 View Results</a>
+
+        <h4 style="padding: 0 15px; margin: 10px 0; margin-top: 20px; color: #667eea;">⚙️ Admin Features</h4>
+        <a onclick="navigateTo('candidateReg')">🎯 Register Candidates</a>
+        <a onclick="navigateTo('adminSettings')">⚙️ Election Settings</a>
+        <a onclick="navigateTo('voterBulkManage')">📥 Bulk Voters</a>
+        <a onclick="navigateTo('adminAudit')">📊 Audit Dashboard</a>
+
+        <h4 style="padding: 0 15px; margin: 10px 0; margin-top: 20px; color: #667eea;">📚 Help</h4>
+        <a onclick="showFeatureGuide()">❓ Feature Guide</a>
+        <a onclick="startTutorial()">🎓 Tutorial</a>
+        <a onclick="loadDemoData()">📦 Load Demo</a>
+        <a onclick="clearAllData()">🗑️ Clear Data</a>
+    </div>
+
     <!-- Homepage -->
     <div id="homepage" class="page active">
         <!-- Navigation Bar -->
@@ -30,16 +157,15 @@
                 <p class="hero-description">A modern, blockchain-inspired voting platform designed for fair and transparent elections. Every vote counts, every voice is heard.</p>
                 
                 <div class="hero-buttons">
-                    <button class="btn btn-primary btn-large" onclick="navigateTo('candidateReg')">
-                        🎯 Get Started as Candidate
+                    <button class="btn btn-primary btn-large" onclick="navigateTo('votingSecure')">
+                        🔐 Vote Securely (with 2FA)
                     </button>
-                    <button class="btn btn-secondary btn-large" onclick="navigateTo('voterReg')">
-                        👥 Register as Voter
+                    <button class="btn btn-secondary btn-large" onclick="loadDemoData()">
+                        📦 Load Demo Data
                     </button>
-                    <label class="btn btn-outline btn-large" for="importFileInput" style="cursor: pointer; margin-left: 8px;">
-                        📁 Import Data
-                    </label>
-                    <input type="file" id="importFileInput" accept=".json,.csv,.txt" style="display:none" />
+                    <button class="btn btn-outline btn-large" onclick="startTutorial()">
+                        🎓 Start Tutorial
+                    </button>
                 </div>
 
                 <div class="hero-stats">
@@ -566,5 +692,6 @@
     <script src="js/bulk-voter.js"></script>
     <script src="js/voting-enhanced.js"></script>
     <script src="js/results.js"></script>
+    <script src="js/tutorial.js"></script>
 </body>
 </html>
